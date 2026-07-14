@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  ChevronRight, 
+  ChevronRight,
+  ChevronLeft,
+  Maximize,
+  X, 
   ChevronDown, 
   AlertTriangle, 
   BookOpen, 
@@ -32,11 +35,121 @@ const getGroupIcon = (group: string) => {
   return <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>;
 };
 
+
+const RiskCard: React.FC<{ item: RiskItem, isExpanded: boolean, toggleExpand: (id: number) => void, triggerToast: (msg: string) => void }> = ({ item, isExpanded, toggleExpand, triggerToast }) => {
+  const hasException = item.isOnline && !!item.exceptionMsg;
+  return (
+    <div
+      onClick={() => toggleExpand(item.id)}
+      className={`bg-white hover:bg-blue-50/30 border border-slate-200 rounded-2xl p-4 shadow-sm transition-all duration-300 flex flex-col gap-3 cursor-pointer select-none relative group/card ${
+        isExpanded 
+          ? 'border-blue-300 shadow-md ring-4 ring-blue-50/50' 
+          : 'hover:border-blue-300 hover:shadow-md'
+      }`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {hasException && (
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200/80 animate-pulse">
+              <AlertTriangle size={10} className="text-red-500 shrink-0" />
+              <span>{item.exceptionMsg}</span>
+            </span>
+          )}
+        </div>
+        <div className="w-6 h-6 rounded-md bg-[#e6efff]/80 text-blue-600 flex items-center justify-center shadow-3xs select-none">
+          <Layers size={12} />
+        </div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="text-sm font-bold text-slate-700 leading-snug group-hover/card:text-slate-900 transition-colors">
+            {item.name}
+          </h4>
+          {item.level && (
+            <span className={`px-1.5 py-0.5 rounded text-xs font-semibold flex-shrink-0 border ${
+              item.level === '高' ? 'bg-red-50 text-red-600 border-red-100' :
+              item.level === '中' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+              'bg-slate-50 text-slate-500 border-slate-200'
+            }`}>
+              {item.level}风险
+            </span>
+          )}
+        </div>
+        <span className="text-xs text-slate-400 font-medium select-none mt-[-2px]">
+          {item.riskCategory}
+        </span>
+      </div>
+      <div className="flex items-center justify-between border-t border-slate-200/40 pt-2.5 mt-0.5 text-xs font-medium">
+        {item.isOnline ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              triggerToast(`正在跳转到 [${item.name}] 的对应明细报表页面...`);
+            }}
+            className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-0.5 hover:underline transition-all py-0.5 cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md border border-blue-100"
+          >
+            查看 <ChevronRight size={11} />
+          </button>
+        ) : (
+          <button
+            disabled
+            className="text-gray-300 font-medium flex items-center gap-0.5 cursor-not-allowed py-0.5 bg-slate-100/80 px-2 py-0.5 rounded-md border border-slate-200/40"
+            title="此项为线下管控模式，无在线统计报表"
+          >
+            查看 <ChevronRight size={11} />
+            <span className="text-[9px] text-slate-400 font-normal ml-0.5">线下</span>
+          </button>
+        )}
+        <span className="text-slate-400 group-hover/card:text-slate-600 transition-colors flex items-center gap-0.5 font-semibold">
+          {isExpanded ? '收起' : '详情'}
+          <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180 text-blue-600' : ''}`} />
+        </span>
+      </div>
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden relative z-20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="pt-3 pb-1 flex flex-col gap-2.5 text-xs border-t border-dashed border-slate-200 mt-2 text-slate-600">
+              <div className="leading-relaxed">
+                <span className="font-bold text-slate-800">风险管控的标准：</span>
+                {item.controlStandard || '暂无'}
+              </div>
+              <div className="leading-relaxed">
+                <span className="font-bold text-slate-800">风险化解要点/方法：</span>
+                {item.resolutionPoints || '暂无'}
+              </div>
+              <div className="leading-relaxed">
+                <span className="font-bold text-slate-800">风险闭环标准：</span>
+                {item.closedLoopStandard || '暂无'}
+              </div>
+              <div className="leading-relaxed border-t border-slate-100 pt-1.5 mt-0.5">
+                <span className="font-bold text-slate-800">接口人工号：</span>
+                {item.contactId !== '-' ? item.contactId : '暂无'}
+              </div>
+              <div className="leading-relaxed">
+                <span className="font-bold text-slate-800">接口人：</span>
+                {item.contactPerson || '暂无'}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
   // Store expanded card IDs
   const [expandedIds, setExpandedIds] = useState<Record<number, boolean>>({});
   // Domain selection (人的管理 vs 供应商管理)
   const [activeDomain, setActiveDomain] = useState<'人的管理' | '供应商管理'>('人的管理');
+  const [viewAllModalCol, setViewAllModalCol] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Trigger floating alert toast
@@ -106,7 +219,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
             }}
             className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
               activeDomain === '人的管理' 
-                ? 'bg-white text-[#3f51b5] shadow-sm' 
+                ? 'bg-white text-blue-600 shadow-sm' 
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/50'
             }`}
           >
@@ -167,11 +280,15 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
                   </span>
                 </div>
                 
-                {isColSelected && (
-                  <span className="text-[10px] font-bold text-[#3f51b5] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
-                    当前选择
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setViewAllModalCol(col)}
+                    className="text-xs text-slate-500 hover:text-slate-800 transition-colors cursor-pointer flex items-center gap-1 opacity-70 hover:opacity-100"
+                  >
+                    <Maximize size={12} className="text-slate-400" />
+                    全屏
+                  </button>
+                </div>
               </div>
 
               {/* Column Body - Grouped list of cards */}
@@ -198,128 +315,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
                             const hasException = item.isOnline && !!item.exceptionMsg;
 
                             return (
-                              <div
-                                key={item.id}
-                                onClick={() => toggleExpand(item.id)}
-                                className={`bg-gradient-to-r from-slate-50/80 to-slate-50/40 hover:from-[#f0f4ff]/70 hover:to-[#f0f4ff]/40 border rounded-2xl p-4 shadow-3xs transition-all duration-300 flex flex-col gap-3 cursor-pointer select-none relative group/card border-slate-100/90 ${
-                                  isExpanded 
-                                    ? 'from-[#f0f4ff]/90 to-[#f0f4ff]/60 border-blue-200 shadow-sm shadow-blue-50' 
-                                    : 'hover:border-blue-200/50 hover:shadow-2xs'
-                                }`}
-                              >
-                                {/* Card Top Row: Badges, warnings and icon */}
-                                <div className="flex items-center justify-between gap-2">
-                                  <div className="flex items-center gap-1.5 flex-wrap">
-                                    {/* Exclamation Badge for Exceptions (Requirement 3) */}
-                                    {hasException && (
-                                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200/80 animate-pulse">
-                                        <AlertTriangle size={10} className="text-red-500 shrink-0" />
-                                        <span>{item.exceptionMsg}</span>
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  {/* Stylized hexagon logo icon representing the node */}
-                                  <div className="w-6 h-6 rounded-md bg-[#e6efff]/80 text-[#3f51b5] flex items-center justify-center shadow-3xs select-none">
-                                    <Layers size={12} />
-                                  </div>
-                                </div>
-
-                                {/* Card Middle Row: Risk Scenario Title */}
-                                <div className="flex flex-col gap-1">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <h4 className="text-[13px] font-bold text-slate-700 leading-snug group-hover/card:text-slate-900 transition-colors">
-                                      {item.name}
-                                    </h4>
-                                    {item.level && (
-                                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold flex-shrink-0 border ${
-                                        item.level === '高' ? 'bg-red-50 text-red-600 border-red-100' :
-                                        item.level === '中' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                                        'bg-slate-50 text-slate-500 border-slate-200'
-                                      }`}>
-                                        {item.level}风险
-                                      </span>
-                                    )}
-                                  </div>
-                                  <span className="text-[10px] text-slate-400 font-medium select-none mt-[-2px]">
-                                    {item.riskCategory}
-                                  </span>
-                                </div>
-
-                                {/* Card Bottom Row: Action and Expand State */}
-                                <div className="flex items-center justify-between border-t border-slate-200/40 pt-2.5 mt-0.5 text-[11px] font-medium">
-                                  {/* Redirection/Jump Button (Requirement 2) */}
-                                  {item.isOnline ? (
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        triggerToast(`正在跳转到 [${item.name}] 的对应明细报表页面...`);
-                                      }}
-                                      className="text-[#3f51b5] hover:text-[#303f9f] font-bold flex items-center gap-0.5 hover:underline transition-all py-0.5 cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md border border-blue-100"
-                                    >
-                                      查看 <ChevronRight size={11} />
-                                    </button>
-                                  ) : (
-                                    <button
-                                      disabled
-                                      className="text-gray-300 font-medium flex items-center gap-0.5 cursor-not-allowed py-0.5 bg-slate-100/80 px-2 py-0.5 rounded-md border border-slate-200/40"
-                                      title="此项为线下管控模式，无在线统计报表"
-                                    >
-                                      查看 <ChevronRight size={11} />
-                                      <span className="text-[9px] text-slate-400 font-normal ml-0.5">线下</span>
-                                    </button>
-                                  )}
-
-                                  {/* Trigger Accordion Expand */}
-                                  <span className="text-slate-400 group-hover/card:text-slate-600 transition-colors flex items-center gap-0.5 font-semibold">
-                                    {isExpanded ? '收起' : '详情'}
-                                    <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180 text-[#3f51b5]' : ''}`} />
-                                  </span>
-                                </div>
-
-                                {/* Inner Details Panel (Accordion) */}
-                                <AnimatePresence initial={false}>
-                                  {isExpanded && (
-                                    <motion.div
-                                      initial={{ height: 0, opacity: 0 }}
-                                      animate={{ height: 'auto', opacity: 1 }}
-                                      exit={{ height: 0, opacity: 0 }}
-                                      transition={{ duration: 0.2, ease: 'easeInOut' }}
-                                      className="overflow-hidden relative z-20"
-                                      onClick={(e) => e.stopPropagation()} // Prevent double trigger
-                                    >
-                                      <div className="pt-3 pb-1 flex flex-col gap-2.5 text-[11px] border-t border-dashed border-slate-200 mt-2 text-slate-600">
-                                        
-                                        <div className="leading-relaxed">
-                                          <span className="font-bold text-slate-800">风险管控的标准：</span>
-                                          {item.controlStandard || '暂无'}
-                                        </div>
-
-                                        <div className="leading-relaxed">
-                                          <span className="font-bold text-slate-800">风险化解要点/方法：</span>
-                                          {item.resolutionPoints || '暂无'}
-                                        </div>
-
-                                        <div className="leading-relaxed">
-                                          <span className="font-bold text-slate-800">风险闭环标准：</span>
-                                          {item.closedLoopStandard || '暂无'}
-                                        </div>
-
-                                        <div className="leading-relaxed border-t border-slate-100 pt-1.5 mt-0.5">
-                                          <span className="font-bold text-slate-800">接口人工号：</span>
-                                          {item.contactId !== '-' ? item.contactId : '暂无'}
-                                        </div>
-
-                                        <div className="leading-relaxed">
-                                          <span className="font-bold text-slate-800">接口人：</span>
-                                          {item.contactPerson || '暂无'}
-                                        </div>
-
-                                      </div>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </div>
+                              <RiskCard key={item.id} item={item} isExpanded={isExpanded} toggleExpand={toggleExpand} triggerToast={triggerToast} />
                             );
                           })}
                         </div>
@@ -337,6 +333,67 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
           );
         })}
       </div>
+
+      {/* View All Modal */}
+      <AnimatePresence>
+        {viewAllModalCol && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm cursor-pointer"
+              onClick={() => setViewAllModalCol(null)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-[90vw] lg:max-w-6xl max-h-[85vh] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-slate-200"
+            >
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <BookOpen size={16} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-800">{viewAllModalCol} - 全部明细条例</h2>
+                    <p className="text-xs text-slate-500">当前阶段下所有管控条例及风险点的完整清单</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setViewAllModalCol(null)}
+                  className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 transition-colors cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 bg-slate-100/60">
+                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                  {Object.keys(columnData[viewAllModalCol] || {}).map(group => (
+                    <div key={group} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col break-inside-avoid">
+                      <div className="px-5 py-4 border-b border-slate-100 font-bold text-slate-800 text-base flex items-center gap-2">
+                        {group}
+                      </div>
+                      <div className="p-4">
+                        <div className="grid gap-3 grid-cols-1">
+                          {columnData[viewAllModalCol][group].map(item => {
+                            const isExpanded = !!expandedIds[item.id];
+                            return (
+                              <RiskCard key={item.id} item={item} isExpanded={isExpanded} toggleExpand={toggleExpand} triggerToast={triggerToast} />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Floating Modern Notification Toast */}
       <AnimatePresence>

@@ -8,9 +8,9 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
     { id: '招聘入职', domain: '人的管理', color: 'blue', ring: 'ring-blue-100/50', border: 'border-blue-300', text: 'text-blue-700' },
     { id: '在职', domain: '人的管理', color: 'blue', ring: 'ring-blue-100/50', border: 'border-blue-300', text: 'text-blue-700' },
     { id: '离职', domain: '人的管理', color: 'blue', ring: 'ring-blue-100/50', border: 'border-blue-300', text: 'text-blue-700' },
-    { id: '引入', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-indigo-300', text: 'text-indigo-700' },
-    { id: '合作', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-indigo-300', text: 'text-indigo-700' },
-    { id: '退出', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-indigo-300', text: 'text-indigo-700' },
+    { id: '引入', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-blue-300', text: 'text-blue-700' },
+    { id: '合作', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-blue-300', text: 'text-blue-700' },
+    { id: '退出', domain: '供应商管理', color: 'indigo', ring: 'ring-indigo-100/50', border: 'border-blue-300', text: 'text-blue-700' },
   ];
 
   const totalRisks = riskData.length;
@@ -28,7 +28,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
         {/* Dimension 1: 整体盘点 */}
         <div className="bg-[#e8ecf4] rounded-lg p-4 shadow-sm border border-blue-50 flex items-center gap-4 min-w-[160px]">
           <div className="flex flex-col">
-            <span className="text-[11px] text-blue-500 font-bold tracking-wider mb-1">总体分布</span>
+            <span className="text-xs text-blue-500 font-bold tracking-wider mb-1">总体分布</span>
             <span className="text-sm text-gray-700 font-medium">风险总数</span>
           </div>
           <div className="text-3xl font-bold text-blue-900 ml-auto">{totalRisks}</div>
@@ -40,7 +40,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
             <AlertTriangle size={80} />
           </div>
           <div className="flex flex-col z-10">
-            <span className="text-[11px] text-red-500 font-bold tracking-wider mb-1">风险告警</span>
+            <span className="text-xs text-red-500 font-bold tracking-wider mb-1">风险告警</span>
             <span className="text-sm text-red-800 font-medium">线上异常</span>
           </div>
           <div className="text-3xl font-bold text-red-600 ml-auto z-10">{onlineExceptions}</div>
@@ -48,7 +48,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
 
         {/* Dimension 2: 管控方式 */}
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-center justify-around flex-1 relative">
-          <span className="absolute top-2 left-3 text-[11px] text-gray-400 font-bold tracking-wider">管控方式</span>
+          <span className="absolute top-2 left-3 text-xs text-gray-400 font-bold tracking-wider">管控方式</span>
           
           <div className="flex items-center gap-3 mt-2">
             <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
@@ -94,7 +94,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                 key={node.id} 
                 className={`flex items-start gap-4 p-3.5 rounded-xl border transition-all duration-300 cursor-pointer relative z-10 ${
                   isSelected 
-                    ? 'bg-white border-indigo-200 shadow-md ring-1 ring-indigo-100' 
+                    ? 'bg-white border-blue-200 shadow-md ring-1 ring-indigo-100' 
                     : 'bg-white/80 border-slate-100 hover:bg-white hover:shadow-sm'
                 }`}
                 onClick={() => onSelectNode(isSelected ? null : node.id)}
@@ -103,12 +103,12 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                 <div className="absolute -left-[28px] top-1/2 -translate-y-1/2 z-20">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center bg-white border-2 shadow-sm transition-all duration-300 ${
                     isSelected 
-                      ? 'border-indigo-600 ring-4 ring-indigo-100 bg-indigo-600 text-white' 
+                      ? 'border-blue-600 ring-4 ring-indigo-100 bg-blue-600 text-white' 
                       : exceptions > 0 
                         ? 'border-red-400 text-red-600 ring-4 ring-red-50 bg-red-50' 
                         : node.color === 'blue' 
                           ? 'border-blue-300 text-blue-700 ring-4 ring-blue-50/50' 
-                          : 'border-indigo-300 text-indigo-700 ring-4 ring-indigo-50/50'
+                          : 'border-blue-300 text-blue-700 ring-4 ring-blue-50/50'
                   }`}>
                     <span className="font-bold text-xs">{total}</span>
                   </div>
@@ -117,21 +117,21 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                 {/* Text Details on the right */}
                 <div className="flex-1 flex flex-col gap-1 relative">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      node.color === 'blue' ? 'bg-blue-50 text-blue-600' : 'bg-indigo-50 text-indigo-600'
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      node.color === 'blue' ? 'bg-blue-50 text-blue-600' : 'bg-blue-50 text-blue-600'
                     }`}>
                       {node.domain}
                     </span>
                     <span className="text-sm font-bold text-gray-800">{node.id}</span>
                     
                     {exceptions > 0 && (
-                      <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 animate-pulse">
+                      <span className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 animate-pulse">
                         <AlertTriangle size={10} /> {exceptions} 项异常
                       </span>
                     )}
 
                     {isSelected && (
-                      <span className="ml-auto text-sm animate-bounce text-indigo-500">
+                      <span className="ml-auto text-sm animate-bounce text-blue-500">
                         <CheckCircle size={14} />
                       </span>
                     )}
@@ -151,8 +151,8 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
           
           {/* Background dashed borders */}
           <div className="absolute inset-x-6 top-10 bottom-6 flex gap-6 pointer-events-none z-0">
-            <div className="flex-1 border border-dashed border-indigo-200 bg-indigo-50/10 rounded-xl relative">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-1 bg-white border border-indigo-100 rounded-full text-xs font-bold text-indigo-700 shadow-sm whitespace-nowrap">
+            <div className="flex-1 border border-dashed border-blue-200 bg-blue-50/10 rounded-xl relative">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-1 bg-white border border-blue-100 rounded-full text-xs font-bold text-blue-700 shadow-sm whitespace-nowrap">
                 <Users size={14} />
                 <span>人的风险管理</span>
               </div>
@@ -187,7 +187,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                   y1="50%" 
                   x2={`${(nodeIndex / 5) * 100}%`} 
                   y2="50%" 
-                  stroke="#3f51b5" 
+                  stroke="#2563EB" 
                   strokeWidth="3" 
                   strokeDasharray="6 6"
                   initial={{ x2: "0%" }}
@@ -212,12 +212,12 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                 transition={{ type: 'spring', stiffness: 150, damping: 15 }}
               >
                 {/* Visual bubble */}
-                <div className="bg-[#3f51b5] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-blue-400/20 whitespace-nowrap animate-pulse">
+                <div className="bg-blue-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-blue-400/20 whitespace-nowrap animate-pulse">
                   <CheckCircle size={10} />
                   <span>当前环节</span>
                 </div>
                 {/* Pointer */}
-                <div className="w-1.5 h-1.5 bg-[#3f51b5] rotate-45 -mt-1 shadow-xs"></div>
+                <div className="w-1.5 h-1.5 bg-blue-600 rotate-45 -mt-1 shadow-xs"></div>
               </motion.div>
             )}
 
@@ -231,7 +231,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                 <div key={node.id} className="col-span-1 flex flex-col items-center relative group">
                   {/* Exception Warning Tooltip */}
                   {exceptions > 0 && (
-                    <div className="absolute -top-11 whitespace-nowrap bg-[#fde8e8] text-red-600 border border-red-200 text-[10px] px-2 py-1 rounded-md flex items-center shadow-sm font-semibold z-20 animate-bounce">
+                    <div className="absolute -top-11 whitespace-nowrap bg-[#fde8e8] text-red-600 border border-red-200 text-xs px-2 py-1 rounded-md flex items-center shadow-sm font-semibold z-20 animate-bounce">
                       <AlertTriangle size={11} className="mr-1 text-red-500" />
                       {exceptions} 项异常
                       <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#fde8e8] border-b border-r border-red-200 rotate-45"></div>
@@ -243,7 +243,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                     onClick={() => onSelectNode(isSelected ? null : node.id)}
                     className={`w-12 h-12 rounded-full flex items-center justify-center bg-white border shadow-sm transition-all duration-300 hover:scale-110 cursor-pointer relative z-10 ${
                       isSelected 
-                        ? 'border-indigo-600 bg-indigo-600 text-white shadow-md' 
+                        ? 'border-blue-600 bg-blue-600 text-white shadow-md' 
                         : exceptions > 0 
                           ? 'border-red-400 text-red-600 bg-red-50/50' 
                           : 'border-slate-300 text-slate-700 hover:border-slate-400 hover:text-slate-900'
@@ -255,7 +255,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                   {/* Stage Title */}
                   <span className={`mt-4 text-xs font-bold px-3.5 py-1.5 rounded-full transition-all duration-300 border ${
                     isSelected 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
                       : 'text-slate-600 bg-white border-slate-200/60 group-hover:bg-slate-50 group-hover:text-slate-900 group-hover:border-slate-300'
                   }`}>
                     {node.id}
@@ -263,7 +263,7 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                   
                   {/* Visual pointer under selected node */}
                   {isSelected && (
-                    <div className="absolute -bottom-4 w-3 h-3 bg-indigo-600 rotate-45 rounded-xs shadow-sm z-20"></div>
+                    <div className="absolute -bottom-4 w-3 h-3 bg-blue-600 rotate-45 rounded-xs shadow-sm z-20"></div>
                   )}
                 </div>
               );

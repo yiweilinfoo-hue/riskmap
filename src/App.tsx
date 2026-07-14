@@ -26,7 +26,7 @@ export default function App() {
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] font-sans text-gray-800 flex flex-col">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
       {/* Top Navbar - 智策平台 Style */}
       <header className="bg-white border-b border-gray-200 flex items-center justify-between px-6 h-[56px] z-20 flex-shrink-0">
         <div className="flex items-center">
@@ -37,7 +37,7 @@ export default function App() {
               <path d="M2 7V17L12 22V12L2 7Z" fill="#2563EB"/>
               <path d="M22 7V17L12 22V12L22 7Z" fill="#1D4ED8"/>
             </svg>
-            <span className="text-[18px] font-bold text-[#1e293b] tracking-wide">智策平台</span>
+            <span className="text-[18px] font-bold font-display text-slate-900 tracking-wide">智策平台</span>
           </div>
           
           <ArrowLeftRight size={16} className="text-gray-400 mx-4" />
@@ -73,24 +73,24 @@ export default function App() {
       </header>
 
       {/* Secondary Header - Page Title & Watermark */}
-      <div className="bg-white border-b border-gray-200 flex items-center h-12 relative overflow-hidden flex-shrink-0">
-        <div className="px-6 text-[#3f51b5] text-[15px] font-medium border-r border-gray-100 h-full flex items-center bg-white z-10 whitespace-nowrap">
-          风险地图看板
+      <div className="bg-white border-b border-slate-200 flex items-center h-14 relative overflow-hidden flex-shrink-0">
+        <div className="px-6 text-slate-900 text-[16px] font-display font-bold border-r border-slate-100 h-full flex items-center bg-white z-10 whitespace-nowrap">
+          风险管理地图看板
         </div>
       </div>
 
       {/* Tabs & Filters Bar */}
-      <div className="bg-white border-b border-gray-200 px-6 h-14 flex items-center justify-between sticky top-0 z-10 shadow-sm flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-6 h-16 flex items-center justify-between sticky top-0 z-10 shadow-sm flex-shrink-0">
         {/* Tabs */}
         <div className="flex items-center gap-6 h-full text-[14px]">
           {(['集团', '业务区', '分拨区'] as Tab[]).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`h-full flex items-center border-b-2 transition-colors px-1 mt-[2px] ${
+              className={`h-full flex items-center border-b-[3px] transition-colors px-1 mt-[2px] ${
                 activeTab === tab 
-                  ? 'border-[#3f51b5] text-[#3f51b5] font-bold' 
-                  : 'border-transparent text-gray-600 hover:text-[#3f51b5]'
+                  ? 'border-blue-600 text-blue-600 font-bold' 
+                  : 'border-transparent text-slate-500 hover:text-slate-800'
               }`}
             >
               {tab}
@@ -101,7 +101,7 @@ export default function App() {
         <div className="flex items-center gap-4 text-[13px]">
           <div className="flex items-center gap-2 text-gray-700">
             <span>时间:</span>
-            <div className="flex items-center border border-gray-300 rounded px-3 py-1.5 bg-white w-[130px] justify-between cursor-pointer hover:border-gray-400">
+            <div className="flex items-center border border-slate-300 rounded px-3 py-1.5 bg-white w-[130px] justify-between cursor-pointer hover:border-gray-400">
               <span className="text-gray-600">2026年05月</span>
               <Calendar size={14} className="text-gray-400" />
             </div>
@@ -110,7 +110,7 @@ export default function App() {
           <div className="relative ml-2">
             <input
               type="text"
-              className="pl-8 pr-3 py-1.5 border border-gray-300 rounded text-sm w-48 focus:outline-none focus:border-blue-500"
+              className="pl-8 pr-3 py-1.5 border border-slate-300 rounded text-sm w-64 focus:outline-none focus:border-blue-500"
               placeholder="搜索组织..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -118,18 +118,18 @@ export default function App() {
             <Search size={14} className="absolute left-2.5 top-2 text-gray-400" />
           </div>
 
-          <button className="bg-[#3f51b5] hover:bg-[#303f9f] text-white px-5 py-1.5 rounded text-sm font-medium transition-colors ml-1 cursor-pointer">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded text-sm font-medium transition-colors ml-1 cursor-pointer">
             查询
           </button>
 
-          <button className="flex items-center gap-1.5 text-[#3f51b5] hover:text-[#303f9f] ml-4 font-medium cursor-pointer">
+          <button className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 ml-4 font-medium cursor-pointer">
             <Download size={15} />
             图片下载
           </button>
         </div>
       </div>
 
-      <main className="flex-1 p-6 max-w-[1600px] mx-auto w-full flex flex-col gap-6">
+      <main className="flex-1 p-6 lg:p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-8">
         
         {/* Roadmap Visualization (Now includes stats) */}
         <Roadmap selectedNode={selectedNode} onSelectNode={setSelectedNode} />
