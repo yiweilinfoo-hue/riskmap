@@ -50,7 +50,7 @@ const RiskCard: React.FC<{ item: RiskItem, isExpanded: boolean, toggleExpand: (i
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {hasException && (
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200/80 animate-pulse">
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200/80 ">
               <AlertTriangle size={10} className="text-red-500 shrink-0" />
               <span>{item.exceptionMsg}</span>
             </span>
@@ -66,12 +66,8 @@ const RiskCard: React.FC<{ item: RiskItem, isExpanded: boolean, toggleExpand: (i
             {item.name}
           </h4>
           {item.level && (
-            <span className={`px-1.5 py-0.5 rounded text-xs font-semibold flex-shrink-0 border ${
-              item.level === '高' ? 'bg-red-50 text-red-600 border-red-100' :
-              item.level === '中' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-              'bg-slate-50 text-slate-500 border-slate-200'
-            }`}>
-              {item.level}风险
+            <span className="px-1.5 py-0.5 rounded text-xs font-semibold flex-shrink-0 border bg-slate-100 text-slate-600 border-slate-200">
+              规则等级：{item.level}
             </span>
           )}
         </div>
@@ -242,11 +238,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
           </button>
         </div>
 
-        {/* Informational Subtext */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 bg-white border border-slate-200/60 px-3 py-1.5 rounded-lg shadow-3xs">
-          <Sparkles size={13} className="text-blue-500 animate-pulse" />
-          <span>点击大板块中对应的<strong>小卡片</strong>可展开查看具体的管控标准及化解要点</span>
-        </div>
+
       </div>
 
       {/* Lifecycle Dashboard Grid (Matching "丰盾云台" screen) */}
@@ -324,7 +316,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
                   })
                 ) : (
                   <div className="py-12 text-center text-slate-400 flex flex-col items-center justify-center flex-1">
-                    <Activity size={24} className="text-slate-300 mb-2 animate-pulse" />
+                    <Activity size={24} className="text-slate-300 mb-2 " />
                     <p className="text-xs">无符合条件的布防内容</p>
                   </div>
                 )}

@@ -3,6 +3,7 @@ import { Users, Building2, Search, AlertTriangle, CheckCircle, BookOpen, Chevron
 import { riskData } from './data';
 import { RiskList } from './components/RiskList';
 import { Roadmap } from './components/Roadmap';
+import { ManagementHighlights } from './components/ManagementHighlights';
 
 type Tab = '集团' | '业务区' | '分拨区';
 
@@ -130,6 +131,9 @@ export default function App() {
       </div>
 
       <main className="flex-1 p-6 lg:p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-8">
+        
+        {/* Management Highlights Section */}
+        <ManagementHighlights />
         
         {/* Roadmap Visualization (Now includes stats) */}
         <Roadmap selectedNode={selectedNode} onSelectNode={setSelectedNode} />
