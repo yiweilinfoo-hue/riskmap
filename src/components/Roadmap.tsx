@@ -85,12 +85,13 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
 
       {/* Roadmap Section */}
       <div className="flex-1 flex flex-col">
-        <div className="text-sm font-bold text-gray-800 mb-4">风险管理路线图</div>
+        <div className="text-sm font-bold text-gray-800 mb-4">风险管理概览</div>
         
         {/* Mobile Layout (< lg) */}
         <div className="lg:hidden flex flex-col gap-4 relative pl-8 py-2">
           {/* Vertical Dashed Connecting Line */}
-          <div className="absolute left-[18px] top-0 bottom-0 w-0.5 border-l-2 border-dashed border-slate-300 opacity-60 z-0"></div>
+          <div className="absolute left-[18px] top-[24px] h-[35%] w-0.5 border-l-2 border-dashed border-slate-300 opacity-60 z-0"></div>
+          <div className="absolute left-[18px] bottom-[24px] h-[35%] w-0.5 border-l-2 border-dashed border-slate-300 opacity-60 z-0"></div>
           
           {timelineNodes.map((node) => {
             const items = riskData.filter(d => d.category1 === node.domain && d.category2 === node.id);
@@ -179,9 +180,19 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
             
             {/* Dashed Connecting Track Line */}
             <svg className="absolute left-[8.33%] right-[8.33%] top-[100px] h-2 w-[83.33%] pointer-events-none z-0" overflow="visible">
-              {/* Background Gray Dashed Line */}
+              {/* Background Gray Dashed Line - Part 1 */}
               <line 
                 x1="0%" 
+                y1="50%" 
+                x2="40%" 
+                y2="50%" 
+                stroke="#cbd5e1" 
+                strokeWidth="3" 
+                strokeDasharray="6 6"
+              />
+              {/* Background Gray Dashed Line - Part 2 */}
+              <line 
+                x1="60%" 
                 y1="50%" 
                 x2="100%" 
                 y2="50%" 
@@ -191,18 +202,34 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
               />
               {/* Active Animated Indigo Dashed Line */}
               {nodeIndex !== -1 && (
-                <motion.line 
-                  x1="0%" 
-                  y1="50%" 
-                  x2={`${(nodeIndex / 5) * 100}%`} 
-                  y2="50%" 
-                  stroke="#2563EB" 
-                  strokeWidth="3" 
-                  strokeDasharray="6 6"
-                  initial={{ x2: "0%" }}
-                  animate={{ x2: `${(nodeIndex / 5) * 100}%` }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-                />
+                <>
+                  <motion.line 
+                    x1="0%" 
+                    y1="50%" 
+                    x2={`${Math.min((nodeIndex / 5) * 100, 40)}%`} 
+                    y2="50%" 
+                    stroke="#2563EB" 
+                    strokeWidth="3" 
+                    strokeDasharray="6 6"
+                    initial={{ x2: "0%" }}
+                    animate={{ x2: `${Math.min((nodeIndex / 5) * 100, 40)}%` }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+                  />
+                  {nodeIndex >= 3 && (
+                    <motion.line 
+                      x1="60%" 
+                      y1="50%" 
+                      x2={`${(nodeIndex / 5) * 100}%`} 
+                      y2="50%" 
+                      stroke="#2563EB" 
+                      strokeWidth="3" 
+                      strokeDasharray="6 6"
+                      initial={{ x2: "60%" }}
+                      animate={{ x2: `${(nodeIndex / 5) * 100}%` }}
+                      transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+                    />
+                  )}
+                </>
               )}
             </svg>
 
@@ -272,7 +299,18 @@ export function Roadmap({ selectedNode, onSelectNode }: { selectedNode: string |
                               </div>
                               <div className="max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-red-200 p-1">
                                 {exceptionItems.map(item => (
-                                  <div key={item.id} className="px-3 py-2 hover:bg-slate-50 border-b border-slate-50 last:border-0 rounded flex flex-col gap-1 transition-colors">
+                                  <div 
+                                    key={item.id} 
+                                    className="px-3 py-2 hover:bg-slate-50 border-b border-slate-50 last:border-0 rounded flex flex-col gap-1 transition-colors cursor-pointer"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onSelectNode(node.id);
+                                      setTimeout(() => {
+                                        window.dispatchEvent(new CustomEvent('scrollToRiskCard', { detail: item.id }));
+                                      }, 150);
+                                      setActiveDropdown(null);
+                                    }}
+                                  >
                                     <span className="font-bold text-slate-700 text-xs truncate" title={item.name}>{item.name}</span>
                                     <span className="text-red-500 text-[10px] bg-red-50 px-1.5 py-0.5 rounded w-fit border border-red-100 break-words whitespace-normal leading-tight">{item.exceptionMsg}</span>
                                   </div>

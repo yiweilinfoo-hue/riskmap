@@ -40,6 +40,7 @@ const RiskCard: React.FC<{ item: RiskItem, isExpanded: boolean, toggleExpand: (i
   const hasException = item.isOnline && !!item.exceptionMsg;
   return (
     <div
+      id={`risk-card-${item.id}`}
       onClick={() => toggleExpand(item.id)}
       className={`bg-white hover:bg-blue-50/30 border border-slate-200 rounded-2xl p-4 shadow-sm transition-all duration-300 flex flex-col gap-3 cursor-pointer select-none relative group/card ${
         isExpanded 
@@ -157,7 +158,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
   };
 
   // Sync active domain tab when a node is selected from the top roadmap
-  useEffect(() => {
+  React.useEffect(() => {
     if (selectedNode) {
       if (['招聘入职', '在职', '离职'].includes(selectedNode)) {
         setActiveDomain('人的管理');
@@ -179,7 +180,41 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
     ? ['招聘入职', '在职', '离职'] 
     : ['引入', '合作', '退出'];
 
-  const columns = selectedNode ? [selectedNode] : allColumns;
+  const columns = allColumns;
+
+
+  React.useEffect(() => {
+    const handleScrollEvent = (e: CustomEvent) => {
+      const id = e.detail;
+      setExpandedIds(prev => ({ ...prev, [id]: true }));
+      setTimeout(() => {
+        const el = document.getElementById(`risk-card-${id}`);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 150;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+          el.classList.add('ring-4', 'ring-blue-400');
+          setTimeout(() => el.classList.remove('ring-4', 'ring-blue-400'), 2000);
+        }
+      }, 50);
+    };
+    window.addEventListener('scrollToRiskCard' as any, handleScrollEvent);
+    return () => window.removeEventListener('scrollToRiskCard' as any, handleScrollEvent);
+  }, []);
+
+  // Scroll to column when selectedNode changes
+  React.useEffect(() => {
+    if (selectedNode) {
+      // Small timeout to allow DOM to render and state to settle
+      setTimeout(() => {
+        const el = document.getElementById(`risk-col-${selectedNode}`);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 120;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  }, [selectedNode]);
+
 
   // Categorize and filter items for rendering
   const columnData = useMemo(() => {
@@ -254,6 +289,7 @@ export function RiskList({ items, selectedNode, onSelectNode }: RiskListProps) {
           return (
             <div
               key={col}
+              id={`risk-col-${col}`}
               className={`bg-white/90 border rounded-3xl p-5 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col min-h-[550px] max-h-[780px] overflow-hidden backdrop-blur-xs ${
                 isColSelected 
                   ? 'border-[#3f51b5] ring-2 ring-[#3f51b5]/15 shadow-md shadow-[#3f51b5]/5' 
